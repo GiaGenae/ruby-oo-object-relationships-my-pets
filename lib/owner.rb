@@ -1,3 +1,5 @@
+require 'pry'
+
 class Owner
   attr_reader :species, :name
   attr_accessor :pets, :dog, :cat
@@ -28,19 +30,24 @@ class Owner
   end
 
   def cats
-    @pets[:cats]
+    Cat.all.select do |cat|
+    #  binding.pry
+      cat.owner == self 
+    end
   end
 
   def dogs
-    @pets[:dogs]
+    Dog.all.select do |dog|
+      dog.owner == self
+    end
   end
 
-  def buy_cat(cat)
-    @pets[:cats] << Cat.new(cat)
+  def buy_cat(name)
+    @pets[:cats] << Cat.new(name, self)
   end
 
-  def buy_dog
-    @pets[:dogs] << Dog.new(dog)
+  def buy_dog(name)
+    @pets[:dogs] << Dog.new(name, self)
   end
 
   def walk_dogs
@@ -56,16 +63,15 @@ class Owner
   end
 
   def sell_pets
-    pets.each do |pet, arr|
+    @pets.each do |pet, arr|
       arr.map do |pet|
         pet.mood = 'nervous'
       end
-      arr.clear
     end
   end
 
   def list_pets
-    "I have #{pets[:dogs].length} dog(s), and #{pets[:cats].length} cat(s)."
+    "I have #{dogs.length} dog(s), and #{cats.length} cat(s)."
   end
 
 end
